@@ -1,0 +1,12 @@
+DEBUG = True
+WEBPACK_MANIFEST_PATH = '../front/manifest.json'
+
+SECRET_KEY = 'secret'
+SENTRY_DSN = 'replace-me'
+
+SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+SECURITY_PASSWORD_HASH = 'bcrypt'
+SECURITY_PASSWORD_SALT = 'secret'
+SECURITY_CHANGEABLE = True
