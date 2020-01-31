@@ -3,6 +3,16 @@ import Peer from 'simple-peer';
 import Automerge from 'automerge';
 import EventEmitter from 'events';
 
+const colors = [
+  '#1313ef',
+  '#ef1321',
+  '#24b554',
+  '#851fd3',
+  '#0eaff4',
+  '#edc112',
+  '#7070ff'
+];
+
 class Paper extends EventEmitter {
   constructor(user, id, doc, swarm) {
     super();
@@ -19,6 +29,9 @@ class Paper extends EventEmitter {
     //   console.log(`[${docId}] ${JSON.stringify(doc)}`)
     // });
 
+    let color = colors[parseInt(swarm.id, 16) % colors.length];
+    this.join(swarm.id, user, color);
+
     // Automerge p2p connections
     this.conns = {};
     swarm.on('connect', (id, peer) => {
@@ -27,8 +40,6 @@ class Paper extends EventEmitter {
         peer.send(JSON.stringify(msg));
       });
       this.conns[id].open();
-
-      this.join(user, user, '#ff0000');
 
       peer.on('data', (data) => {
         console.log(`New change from peer: ${id}`);
@@ -41,6 +52,11 @@ class Paper extends EventEmitter {
         this.leave(id);
       });
     });
+
+    setInterval(() => {
+      console.log('Saving...');
+      this.save();
+    }, 10000);
   }
 
   static new(user, id, swarm) {
@@ -109,7 +125,6 @@ class Paper extends EventEmitter {
     this.doc = Automerge.change(this.doc, changeFn);
     this.docSet.setDoc(this.id, this.doc);
     this._updateDoc(prevDoc, this.doc);
-    this.save();
   }
 
   _applyChange(conn, change) {

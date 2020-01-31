@@ -7,8 +7,7 @@ import Swarm from './Swarm';
 
 const socket = io();
 socket.on('connect', () => {
-  const id = 'foobar'; // TODO testing/doc id
-  let swarm = new Swarm(socket, id);
+  let swarm = new Swarm(socket, DOCUMENT_ID);
 
   let doc;
   if (DOCUMENT) {
@@ -20,15 +19,5 @@ socket.on('connect', () => {
   }
 
   let main = document.getElementById('document');
-  render(<Document doc={doc} id={USER} />, main);
+  render(<Document doc={doc} id={swarm.id} />, main);
 });
-
-const colors = [
-  '#1313ef',
-  '#ef1321',
-  '#24b554',
-  '#851fd3',
-  '#0eaff4',
-  '#edc112',
-  '#7070ff'
-];
