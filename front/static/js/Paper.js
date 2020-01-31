@@ -1,4 +1,3 @@
-import cuid from 'cuid';
 import crypto from 'crypto';
 import Peer from 'simple-peer';
 import Automerge from 'automerge';
@@ -16,9 +15,9 @@ class Paper extends EventEmitter {
     this.docSet.setDoc(this.id, this.doc);
 
     // Log changes
-    this.docSet.registerHandler((docId, doc) => {
-      console.log(`[${docId}] ${JSON.stringify(doc)}`)
-    });
+    // this.docSet.registerHandler((docId, doc) => {
+    //   console.log(`[${docId}] ${JSON.stringify(doc)}`)
+    // });
 
     // Automerge p2p connections
     this.conns = {};
@@ -36,8 +35,10 @@ class Paper extends EventEmitter {
         this._applyChange(this.conns[id], data);
       });
       peer.on('close', () => {
+        console.log('PEER LEFT!');
         this.conns[id].close();
         delete this.conns[id]
+        this.leave(id);
       });
     });
   }
@@ -105,16 +106,13 @@ class Paper extends EventEmitter {
 
   _createChange(changeFn) {
     let prevDoc = this.doc;
-    this.doc = Automerge.change(this.doc, 'CHANGEMSG', changeFn);
+    this.doc = Automerge.change(this.doc, changeFn);
     this.docSet.setDoc(this.id, this.doc);
     this._updateDoc(prevDoc, this.doc);
     this.save();
   }
 
   _applyChange(conn, change) {
-    console.log('Received changes:');
-    console.log(change);
-
     let prevDoc = this.doc;
     conn.receiveMsg(JSON.parse(change));
     this.doc = this.docSet.getDoc(this.id);
