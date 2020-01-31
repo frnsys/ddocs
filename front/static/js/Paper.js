@@ -20,6 +20,7 @@ class Paper extends EventEmitter {
     this.doc = doc;
     this.diffs = [];
     this.peers = {};
+    this.user = user;
     this.swarm = swarm;
 
     // So Automerge can handle changes
@@ -200,11 +201,10 @@ class Paper extends EventEmitter {
     });
   }
 
-  addComment(peerId, threadId, body, start, end) {
+  addComment(threadId, body, start, end) {
     if (!body) return;
     this._createChange((changeDoc) => {
-      // TODO ideally this uses persistent id or sth
-      let name = changeDoc.peers[peerId].name;
+      let name = this.user;
       let commentId = crypto.randomBytes(32).toString('hex');
       let comment = {
         id: commentId,

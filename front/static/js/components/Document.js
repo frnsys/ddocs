@@ -52,7 +52,7 @@ class Doc extends Component {
     let addComment = <Comments top={caretTop} focused={true} thread={[]} add={(_, body) => {
       if (body) {
         let { start, end } = this.state.caretIdx;
-        this.state.doc.addComment(this.props.id, null, body, start, end);
+        this.state.doc.addComment(null, body, start, end);
         this.editor.current.focus();
       }
     }} />;
@@ -75,7 +75,7 @@ class Doc extends Component {
                 top={caretTop}
                 focused={focused}
                 doc={this.state.doc}
-                add={(id, body) => this.state.doc.addComment(this.props.id, id, body)}
+                add={(id, body) => this.state.doc.addComment(id, body)}
                 resolve={() => this.state.doc.resolveComment(c.id)}
                 {...c} />
             })}
