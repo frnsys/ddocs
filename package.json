@@ -1,0 +1,40 @@
+{
+  "name": "ddocs",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "NODE_ENV=production webpack --progress --colors -p",
+    "start": "concurrently -n \"WEBPACK,FLASK\" -c \"bgBlue.bold,bgGreen.bold\" \"npm run webpack-dev-server\" \"npm run flask-server\"",
+    "webpack-dev-server": "NODE_ENV=debug webpack-dev-server --port 2992 --hot --inline",
+    "flask-server": "FLASK_APP=app.py FLASK_DEBUG=1 python app.py"
+  },
+  "dependencies": {
+    "automerge": "^0.12.1",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-markdown": "^3.3.4",
+    "react-select": "^1.2.1",
+    "socket.io-client": "^2.3.0",
+    "textarea-caret": "github:component/textarea-caret-position"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.51",
+    "@babel/polyfill": "^7.0.0-beta.51",
+    "@babel/preset-env": "^7.0.0-beta.51",
+    "@babel/preset-react": "^7.0.0-beta.51",
+    "babel-loader": "^8.0.0-beta.0",
+    "concurrently": "^3.5.0",
+    "css-loader": "^0.28.4",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "file-loader": "^0.11.2",
+    "manifest-revision-webpack-plugin": "^0.4.0",
+    "node-sass": "^4.13.1",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^4.0.0",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5",
+    "sync-exec": "^0.6.2"
+  }
+}

@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>A Document (testing)</h1>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const DOCUMENT_ID = '{{ id }}';
+const DOCUMENT = '{{ doc|safe }}';
+</script>
+{{ javascript_tag('main_js') | safe }}
+{% endblock %}

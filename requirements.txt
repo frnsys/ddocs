@@ -1,0 +1,7 @@
+Flask==1.1.1
+Flask-Migrate==2.5.2
+Flask-Security==3.0.0
+Flask-SocketIO==4.2.1
+Flask-SQLAlchemy==2.4.1
+Flask-Webpack==0.1.0
+raven==6.10.0

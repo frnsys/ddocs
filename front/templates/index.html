@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>Documents</h1>
+<ul>
+    {% for doc in docs %}
+        <li><a href="{{ url_for('document', id=doc.id) }}">{{ doc.title }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
