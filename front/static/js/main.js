@@ -9,15 +9,25 @@ const socket = io();
 socket.on('connect', () => {
   let swarm = new Swarm(socket, DOCUMENT_ID);
 
-  let doc;
-  if (DOCUMENT) {
-    console.log('Loading existing')
-    doc = Paper.load(USER, DOCUMENT_ID, DOCUMENT, swarm);
-  } else {
-    console.log('Creating new');
-    doc = Paper.new(USER, DOCUMENT_ID, swarm);
-  }
-
-  let main = document.getElementById('document');
-  render(<Document doc={doc} id={swarm.id} />, main);
+  fetch(`/${DOCUMENT_ID}/state`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin'
+  })
+    .then(res => res.json())
+    .then((data) => {
+      let doc;
+      if (data.document) {
+        doc = Paper.load(USER, DOCUMENT_ID, data.document, swarm);
+      } else {
+        console.log('Creating new');
+        doc = Paper.new(USER, DOCUMENT_ID, swarm);
+      }
+      let main = document.getElementById('document');
+      render(<Document doc={doc} id={swarm.id} />, main);
+    })
+    .catch(err => { throw err });
 });

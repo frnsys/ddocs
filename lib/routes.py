@@ -13,15 +13,21 @@ def index():
     return render_template('index.html', docs=docs)
 
 
-@bp.route('/<string:id>', methods=['GET', 'POST'])
+@bp.route('/<string:id>')
 @login_required
 def document(id):
+    user = current_user.email
+    return render_template('document.html', id=id, user=user)
+
+
+@bp.route('/<string:id>/state', methods=['GET', 'POST'])
+@login_required
+def document_state(id):
     if request.method == 'GET':
-        user = current_user.email
         doc = Document.query.get(id)
         if doc is not None:
             doc = doc.data
-        return render_template('document.html', id=id, doc=doc, user=user)
+        return jsonify(document=doc)
     else:
         doc = Document.query.get(id)
         data = request.json['doc']

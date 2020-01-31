@@ -8,7 +8,6 @@
 {% block scripts %}
 <script>
 const DOCUMENT_ID = '{{ id }}';
-const DOCUMENT = {% if doc %} '{{ doc|safe }}' {% else %} null {% endif %};
 const USER = '{{ user }}';
 </script>
 {{ javascript_tag('main_js') | safe }}

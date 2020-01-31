@@ -79,7 +79,7 @@ class Paper extends EventEmitter {
     setInterval(() => {
       console.log('Saving...');
       this.save();
-    }, 10000);
+    }, 1000);
   }
 
   static new(user, id, swarm) {
@@ -95,13 +95,12 @@ class Paper extends EventEmitter {
   }
 
   static load(user, id, init, swarm) {
-    console.log(init);
     let doc = Automerge.load(init);
     return new Paper(user, id, doc, swarm);
   }
 
   save() {
-    fetch(`/${this.id}`, {
+    fetch(`/${this.id}/state`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
