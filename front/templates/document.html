@@ -1,13 +1,16 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h1>A Document (testing)</h1>
+{{ user }}
+<article id="document">
+</article>
 {% endblock %}
 
 {% block scripts %}
 <script>
 const DOCUMENT_ID = '{{ id }}';
-const DOCUMENT = '{{ doc|safe }}';
+const DOCUMENT = {% if doc %} '{{ doc|safe }}' {% else %} null {% endif %};
+const USER = '{{ user }}';
 </script>
 {{ javascript_tag('main_js') | safe }}
 {% endblock %}

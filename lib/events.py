@@ -15,31 +15,29 @@ def authenticated_only(f):
     return wrapped
 
 
-@socketio.on('joined')
+@socketio.on('peer:intro')
 @authenticated_only
-def joined(msg):
+def peer_intro(msg):
     room = msg['id']
     join_room(room)
-    emit('peer:joined', {'peer': current_user.email}, room=room, include_self=False)
+    emit('peer:joined', {'id': msg['peerId']}, room=room, include_self=False)
+
+
+@socketio.on('peer:offer')
+@authenticated_only
+def peer_offer(msg):
+    peer_id = msg['peerId']
+    emit('peer:offer', {'peerId': msg['fromId'], 'signal': msg['signal']}, room=peer_id)
+
+
+@socketio.on('peer:response')
+@authenticated_only
+def peer_response(msg):
+    peer_id = msg['peerId']
+    emit('peer:response', {'peerId': msg['fromId'], 'signal': msg['signal']}, room=peer_id)
 
 
 @socketio.on('disconnect')
 def disconnected():
     for room in rooms():
         leave_room(room)
-        emit('peer:left', {'peer': current_user.email}, room=room, include_self=False)
-
-
-@socketio.on('doc:change')
-@authenticated_only
-def change(msg):
-    room = msg['id']
-    emit('doc:change', {'change': msg['change']}, room=room, include_self=False)
-
-
-@socketio.on('doc:save')
-@authenticated_only
-def save(msg):
-    room = msg['id']
-    emit('doc:change', {'change': msg['change']}, room=room, include_self=False)
-

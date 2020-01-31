@@ -1,2 +1,219 @@
-html
+*
+  -moz-box-sizing: border-box
+  -webkit-box-sizing: border-box
+  box-sizing: border-box
+
+html, body
   font-family: sans-serif
+  background: pink
+
+main
+  padding: 2em
+  max-width: 720px
+  margin: 0 auto
+
+nav
+  display: flex
+  align-items: center
+  justify-content: space-between
+
+button
+  padding: 0.2em 0.3em
+  border-radius: 0.2em
+  border: none
+  display: inline-block
+  cursor: pointer
+  background: #fff
+
+input[type=text]
+  padding: 0.2em 0.3em
+  border-radius: 0.2em
+  border: none
+
+textarea
+  width: 100%
+  padding: 0.5em
+  display: block
+
+.doc-editor-textarea
+  min-height: 50vh
+  padding: 1em
+
+.highlighter
+  padding: 1em
+  position: absolute
+  top: 0
+  right: 0
+  left: 0
+  bottom: 0
+  pointer-events: none
+  white-space: pre-wrap
+
+.highlight
+  opacity: 0.2
+
+.highlight-text
+  visibility: hidden
+
+.doc-preview
+  min-height: 50vh
+  padding: 1em
+  margin: 1em 0
+  background: #fff
+  position: relative
+
+  img
+    max-width: 100%
+
+.doc-preview-label
+  position: absolute
+  top: 0
+  right: 0
+  background: #222
+  color: #fff
+  padding: 0.2em 0.3em
+  font-size: 0.75em
+  border-radius: 0 0 0 0.25em
+
+.doc-editor
+  position: relative
+  margin: 1em 0
+
+.doc-editor-constrained
+  overflow: hidden
+  position: relative
+
+.peer-label
+  font-size: 0.6em
+  background: blue
+  color: #fff
+  padding: 0.2em 0.3em
+  border-radius: 0.2em
+
+.peer-cursor
+  width: 1px
+  background: blue
+  height: 1em
+
+.doc-id
+  font-size: 0.85em
+  text-align: center
+  color: rgba(0, 0, 0, 0.5)
+
+  span
+    border-bottom: 2px solid #7070ff
+
+.doc-title
+  font-size: 1.6em
+  font-weight: bold
+  margin: 1em 0 0 0
+
+.app-name
+  max-width: 8em
+
+#doc-list
+  margin: 0
+  padding: 0
+
+  li
+    list-style-type: none
+
+  a
+    cursor: pointer
+    text-decoration: underline
+
+.Select-control
+  border-radius: 0.2em !important
+  height: auto !important
+  border: none !important
+
+.Select-input
+  height: auto !important
+  border: none !important
+
+  > input
+    padding: 0.25em 0 !important
+    max-width: 10em !important
+
+.Select-placeholder
+  line-height: 26px !important
+
+.doc-add-comment
+  position: absolute
+  font-size: 0.6em
+  background: blue
+  background: #d8eafd
+  color: #000
+  padding: 0.3em 0.3em 0.1em 0.3em
+  cursor: pointer
+  border: 1px solid #becede
+  border-radius: 0.2em
+  z-index: 1
+
+  &:hover
+    background: #cfe4fc
+
+.doc-comment
+  background: #eee
+  border-bottom: 1px solid #ddd
+  padding: 0.5em
+  font-size: 0.9em
+  width: 15em
+  word-break: break-all
+
+  &:last-child
+    border-bottom: none
+
+.doc-comment-author
+  font-size: 0.8em
+  color: #555
+  font-weight: bold
+
+.doc-comment-datetime
+  font-size: 0.8em
+  color: #555
+
+.doc-comment-body
+  margin: 0.5em 0
+
+.doc-comments
+  position: absolute
+  left: -14em
+  z-index: 1
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1)
+  border: 2px solid #ddd
+
+.doc-comment textarea
+  min-height: 5em
+
+.doc-comment-resolve
+  position: absolute
+  font-size: 0.75em
+  right: 0.25em
+  top: 0.25em
+  border: 1px solid #ccc
+  background: #e5e5e5
+
+  &:hover
+    background: #dadada
+
+.doc-comment button
+  width: 100%
+  padding: 0.5em
+  background: #7070ff
+  color: #fff
+  border-radius: 0 0 0.2em 0.2em
+
+.doc-overlay
+  position: 'absolute'
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+
+.doc-editor-constrained .doc-overlay
+  pointer-events: none
+
+.doc-misc
+  text-align: center
+  margin: 1em 0
