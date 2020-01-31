@@ -15,11 +15,13 @@ class Doc extends Component {
     this.state = {
       scrollTop: 0,
       focusedComment: null,
-      doc: props.doc
+      doc: props.doc,
+      peers: props.doc.peers
     };
     this.editor = React.createRef();
 
     props.doc.on('updated', (doc) => this.setState({ doc }));
+    props.doc.on('updatedPeers', (peers) => this.setState({ peers }));
   }
 
   onScroll(scrollTop) {
@@ -43,7 +45,7 @@ class Doc extends Component {
 
   render() {
     let text = this.state.doc.text;
-    let peers = Object.values(this.state.doc.peers).filter((p) => p.id !== this.props.id && p.pos);
+    let peers = Object.values(this.state.peers).filter((p) => p.id !== this.props.id && p.pos);
     let activeComments = Object.values(this.state.doc.comments).filter((c) => !c.resolved);
 
     let caretTop = this.state.caretPos ? this.state.caretPos.start.top : 0;
@@ -56,11 +58,13 @@ class Doc extends Component {
     }} />;
 
     return <div id='doc'>
-      <InlineEditable
-        className='doc-title'
-        value={this.state.doc.title}
-        onEdit={(title) => this.state.doc.title = title} />
-      <div>{this.state.doc.nPeers} peers</div>
+      <div className='doc-header'>
+        <InlineEditable
+          className='doc-title'
+          value={this.state.doc.title}
+          onEdit={(title) => this.state.doc.title = title} />
+        <div>{Object.keys(this.state.peers).length} peers</div>
+      </div>
       <div id='editor'>
         <div className='doc-editor'>
           <div className='doc-overlay' style={{top: -this.state.scrollTop}}>

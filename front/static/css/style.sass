@@ -4,13 +4,9 @@
   box-sizing: border-box
 
 html, body
+  margin: 0
   font-family: sans-serif
-  background: pink
-
-main
-  padding: 2em
-  max-width: 720px
-  margin: 0 auto
+  background: #eee
 
 nav
   display: flex
@@ -103,48 +99,13 @@ textarea
   background: blue
   height: 1em
 
-.doc-id
-  font-size: 0.85em
-  text-align: center
-  color: rgba(0, 0, 0, 0.5)
-
-  span
-    border-bottom: 2px solid #7070ff
+.doc-header
+  padding: 1em
+  border-bottom: 1px solid black
 
 .doc-title
   font-size: 1.6em
   font-weight: bold
-  margin: 1em 0 0 0
-
-.app-name
-  max-width: 8em
-
-#doc-list
-  margin: 0
-  padding: 0
-
-  li
-    list-style-type: none
-
-  a
-    cursor: pointer
-    text-decoration: underline
-
-.Select-control
-  border-radius: 0.2em !important
-  height: auto !important
-  border: none !important
-
-.Select-input
-  height: auto !important
-  border: none !important
-
-  > input
-    padding: 0.25em 0 !important
-    max-width: 10em !important
-
-.Select-placeholder
-  line-height: 26px !important
 
 .doc-add-comment
   position: absolute
@@ -221,7 +182,3 @@ textarea
 
 .doc-editor-constrained .doc-overlay
   pointer-events: none
-
-.doc-misc
-  text-align: center
-  margin: 1em 0

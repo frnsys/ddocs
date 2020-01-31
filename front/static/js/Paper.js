@@ -19,6 +19,8 @@ class Paper extends EventEmitter {
     this.id = id;
     this.doc = doc;
     this.diffs = [];
+    this.peers = {};
+    this.swarm = swarm;
 
     // So Automerge can handle changes
     this.docSet = new Automerge.DocSet();
@@ -29,27 +31,47 @@ class Paper extends EventEmitter {
     //   console.log(`[${docId}] ${JSON.stringify(doc)}`)
     // });
 
-    let color = colors[parseInt(swarm.id, 16) % colors.length];
-    this.join(swarm.id, user, color);
-
     // Automerge p2p connections
     this.conns = {};
     swarm.on('connect', (id, peer) => {
+      let color = colors[parseInt(id, 16) % colors.length];
+      this.peers[id] = {
+        id: id,
+        name: id,
+        color: color
+      };
+      this.emit('updatedPeers', this.peers);
+
       console.log(`Created Automerge connection for peer: ${id}`);
       this.conns[id] = new Automerge.Connection(this.docSet, (msg) => {
-        peer.send(JSON.stringify(msg));
+        peer.send(JSON.stringify({
+          type: 'change',
+          change: msg
+        }));
       });
       this.conns[id].open();
 
       peer.on('data', (data) => {
-        console.log(`New change from peer: ${id}`);
-        this._applyChange(this.conns[id], data);
+        data = JSON.parse(data);
+        switch (data.type) {
+          case 'change':
+            console.log(`New change from peer: ${id}`);
+            this._applyChange(this.conns[id], data.change);
+            break;
+          case 'peer':
+            this.peers[id].pos = data.pos;
+            this.peers[id].idx = data.idx;
+            this.emit('updatedPeers', this.peers);
+            break;
+          default:
+            console.log(`Unrecognized peer message: ${data.type}`)
+        }
       });
       peer.on('close', () => {
-        console.log('PEER LEFT!');
         this.conns[id].close();
         delete this.conns[id]
-        this.leave(id);
+        delete this.peers[id];
+        this.emit('updatedPeers', this.peers);
       });
     });
 
@@ -63,7 +85,6 @@ class Paper extends EventEmitter {
     let doc = Automerge.from({
         text: new Automerge.Text(),
         title: 'Untitled',
-        peers: {},
         comments: {}
     });
 
@@ -73,6 +94,7 @@ class Paper extends EventEmitter {
   }
 
   static load(user, id, init, swarm) {
+    console.log(init);
     let doc = Automerge.load(init);
     return new Paper(user, id, doc, swarm);
   }
@@ -94,12 +116,8 @@ class Paper extends EventEmitter {
       .catch(err => { throw err });
   }
 
-  get peers() {
-    return this.doc.peers;
-  }
-
   get nPeers() {
-    return Object.keys(this.doc.peers).length;
+    return Object.keys(this.peers).length;
   }
 
   get text() {
@@ -129,7 +147,7 @@ class Paper extends EventEmitter {
 
   _applyChange(conn, change) {
     let prevDoc = this.doc;
-    conn.receiveMsg(JSON.parse(change));
+    conn.receiveMsg(change);
     this.doc = this.docSet.getDoc(this.id);
     this._updateDoc(prevDoc, this.doc);
   }
@@ -141,11 +159,12 @@ class Paper extends EventEmitter {
   }
 
   setSelection(peerId, caretPos, caretIdx) {
-    // update peers about caret position
-    this._createChange((changeDoc) => {
-      changeDoc.peers[peerId].pos = caretPos;
-      changeDoc.peers[peerId].idx = caretIdx;
-    });
+    // Update peers about caret position
+    this.swarm.broadcast(JSON.stringify({
+      type: 'peer',
+      pos: caretPos,
+      idx: caretIdx
+    }));
   }
 
   editText(edits) {
@@ -178,22 +197,6 @@ class Paper extends EventEmitter {
           }
         });
       });
-    });
-  }
-
-  join(id, name, color) {
-    this._createChange((changeDoc) => {
-      changeDoc.peers[id] = {
-          id: id,
-          name: name,
-          color: color
-      };
-    });
-  }
-
-  leave(id) {
-    this._createChange((changeDoc) => {
-      delete changeDoc.peers[id];
     });
   }
 
