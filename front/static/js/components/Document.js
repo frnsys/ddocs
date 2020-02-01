@@ -3,8 +3,10 @@ import Editor from './Editor';
 import Comments from './Comments';
 import Highlight from './Highlight';
 import InlineEditable from './InlineEditable';
+import ReactMarkdown from 'react-markdown';
 import React, {Component} from 'react';
 
+// TODO can use a more efficient data structure
 function commentForCaret(comments, start, end) {
   return comments.find((c) => c.start <= start && c.end >= end);
 }
@@ -97,6 +99,9 @@ class Doc extends Component {
               onEdit={(edits) => this.state.doc.editText(edits)} />
           </div>
         </div>
+      </div>
+      <div id='preview' className='doc-preview'>
+        <ReactMarkdown source={this.state.doc.text} />
       </div>
     </div>;
   }
