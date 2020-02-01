@@ -1,9 +1,10 @@
-import crypto from 'crypto';
+import cuid from 'cuid';
 import Peer from 'simple-peer';
 import Automerge from 'automerge';
 import EventEmitter from 'events';
 
-const colors = [
+const SAVE_INTERVAL = 1000;
+const COLORS = [
   '#1313ef',
   '#ef1321',
   '#24b554',
@@ -19,7 +20,6 @@ class Paper extends EventEmitter {
     this.id = id;
     this.doc = doc;
     this.diffs = [];
-    this.peers = {};
     this.user = user;
     this.swarm = swarm;
 
@@ -28,14 +28,17 @@ class Paper extends EventEmitter {
     this.docSet.setDoc(this.id, this.doc);
 
     // Log changes
-    // this.docSet.registerHandler((docId, doc) => {
-    //   console.log(`[${docId}] ${JSON.stringify(doc)}`)
-    // });
+    this._changesSinceSave = 0;
+    this.docSet.registerHandler((docId, doc) => {
+      // console.log(`[${docId}] ${JSON.stringify(doc)}`)
+      this._changesSinceSave += 1;
+    });
 
     // Automerge p2p connections
+    this.peers = {};
     this.conns = {};
     swarm.on('connect', (id, peer) => {
-      let color = colors[parseInt(id, 16) % colors.length];
+      let color = COLORS[parseInt(id, 16) % COLORS.length];
       this.peers[id] = {
         id: id,
         name: id,
@@ -77,9 +80,12 @@ class Paper extends EventEmitter {
     });
 
     setInterval(() => {
-      console.log('Saving...');
-      this.save();
-    }, 1000);
+      if (this._changesSinceSave > 0) {
+        console.log('Saving...');
+        this.save();
+        this._changesSinceSave = 0;
+      }
+    }, SAVE_INTERVAL);
   }
 
   static new(user, id, swarm) {
@@ -114,10 +120,6 @@ class Paper extends EventEmitter {
       .then(res => res.json())
       .then((data) => {})
       .catch(err => { throw err });
-  }
-
-  get nPeers() {
-    return Object.keys(this.peers).length;
   }
 
   get text() {
@@ -204,7 +206,7 @@ class Paper extends EventEmitter {
     if (!body) return;
     this._createChange((changeDoc) => {
       let name = this.user;
-      let commentId = crypto.randomBytes(32).toString('hex');
+      let commentId = cuid();
       let comment = {
         id: commentId,
         created: Date.now(),
@@ -214,7 +216,7 @@ class Paper extends EventEmitter {
       if (threadId) {
         changeDoc.comments[threadId].thread.push(comment);
       } else {
-        threadId = crypto.randomBytes(32).toString('hex');
+        threadId = cuid();
         changeDoc.comments[threadId] = {
           id: threadId,
           start: start,

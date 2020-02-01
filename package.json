@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "automerge": "^0.12.1",
+    "cuid": "^2.1.8",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-markdown": "^3.3.4",
